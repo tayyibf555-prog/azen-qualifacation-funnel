@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/**
+ * Tokens lifted from azen.io so the funnel and the site read as one product.
+ * Near-black ground, Apple system blue, hairlines rather than borders.
+ */
+@theme {
+  --color-ground:     #020202;
+  --color-surface:    #0f1011;
+  --color-surface-hi: #151515;
+  --color-glass:      rgba(255, 255, 255, 0.04);
+
+  --color-hairline:   rgba(255, 255, 255, 0.05);
+  --color-hairline-2: rgba(255, 255, 255, 0.10);
+  --color-hairline-3: rgba(255, 255, 255, 0.20);
+
+  --color-ink:   oklch(0.96 0.005 260);
+  --color-ink-2: oklch(0.80 0.010 260);
+  --color-ink-3: #86868b;
+
+  --color-blue:   #0071e3;
+  /* Apple ships a lighter blue for dark mode: #0071e3 as small text on
+     near-black is only 3.98:1, under AA. Fills keep the brand value. */
+  --color-blue-hi: #0a84ff;
+  --color-blue-2: #005bb5;
+  --color-blue-3: oklch(0.30 0.18 260);
+
+  --font-sans: var(--font-hanken), -apple-system, system-ui, "Helvetica Neue", sans-serif;
+  --font-mono: var(--font-geist), ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  color-scheme: dark;
+  /* Apple's rule: tracking is size-specific, never one value for everything. */
+  --track-display: -0.028em;
+  --track-title: -0.021em;
+  --track-body: -0.005em;
+  --track-caption: 0.012em;
+  --track-eyebrow: 0.06em;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  /* Layout scales with the user's text size rather than fighting it. */
+  font: 100%/1.5 var(--font-sans);
+}
+
+body {
+  margin: 0;
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  letter-spacing: var(--track-body);
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+  font-optical-sizing: auto;
+}
+
+::selection {
+  background: var(--color-blue);
+  color: #fff;
+}
+
+/* --- Type scale ---------------------------------------------------------
+   Leading tightens as size grows; tracking goes negative as size grows.  */
+
+.t-display {
+  font-size: clamp(2.6rem, 9vw, 4.75rem);
+  line-height: 1.03;
+  letter-spacing: var(--track-display);
+  font-weight: 600;
+}
+
+.t-title {
+  font-size: clamp(1.9rem, 6.6vw, 2.75rem);
+  line-height: 1.08;
+  letter-spacing: var(--track-title);
+  font-weight: 600;
+}
+
+.t-headline {
+  font-size: clamp(1.15rem, 4vw, 1.35rem);
+  line-height: 1.28;
+  letter-spacing: var(--track-title);
+  font-weight: 600;
+}
+
+.t-body {
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  letter-spacing: var(--track-body);
+}
+
+.t-caption {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: var(--track-caption);
+}
+
+.t-eyebrow {
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  letter-spacing: var(--track-eyebrow);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* --- Materials ----------------------------------------------------------
+   Translucent chrome with content passing underneath, not an opaque strip. */
+
+.material-chrome {
+  background: rgba(2, 2, 2, 0.68);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+}
+
+/* --- Accessibility ------------------------------------------------------ */
+
+@media (prefers-reduced-transparency: reduce) {
+  .material-chrome {
+    background: var(--color-ground);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-ink-3: #b4b4bb;
+    --color-hairline: rgba(255, 255, 255, 0.22);
+    --color-hairline-2: rgba(255, 255, 255, 0.34);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
