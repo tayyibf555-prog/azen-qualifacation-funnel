@@ -164,8 +164,9 @@ export default function Funnel() {
     saveProgress(next, stepId);
 
     // Every answer after the email capture updates the same sheet row, so an
-    // abandoner is always saved at the furthest point they reached.
-    if (next.email) {
+    // abandoner is always saved at the furthest point they reached. Once they
+    // have finished, nothing may push a partial again and demote the row.
+    if (next.email && !completed.current) {
       void pushLead({
         leadId: leadId.current,
         stage: "partial",

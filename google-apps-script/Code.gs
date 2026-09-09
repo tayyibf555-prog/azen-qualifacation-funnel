@@ -14,6 +14,10 @@ var SHARED_SECRET = 'CHANGE_ME';
 
 var SHEET_NAME = 'Leads';
 
+// A lead only ever moves forward. A partial arriving late (network reordering,
+// or someone reopening the funnel) must never demote a finished row.
+var STAGE_RANK = { test: -1, partial: 0, abandoned: 1, complete: 2, booked: 3 };
+
 // Column order. Add one here and to the sheet's header row to capture more;
 // anything the app sends that isn't listed is ignored.
 var COLUMNS = [
@@ -70,6 +74,15 @@ function doPost(e) {
       }
 
       flat.firstSeen = existing[headers.indexOf('firstSeen')] || now;
+
+      // Keep the furthest stage this lead ever reached.
+      var priorStage = String(existing[headers.indexOf('stage')] || '');
+      var priorRank = STAGE_RANK[priorStage];
+      var nextRank = STAGE_RANK[String(flat.stage || '')];
+      if (priorRank !== undefined && nextRank !== undefined && nextRank < priorRank) {
+        flat.stage = priorStage;
+        flat.lastStep = existing[headers.indexOf('lastStep')] || flat.lastStep;
+      }
 
       // Never blank a field we already hold: a partial push carries fewer
       // answers than the completion that came before it.
